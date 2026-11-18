@@ -1,0 +1,22 @@
+name: Build MetalHudLoader FPS Only
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Theos & SDK
+        run: |
+          git clone --recursive https://github.com $HOME/theos
+          curl -LO https://github.com
+          unzip -q master.zip
+          mv sdks-master/*.sdk $HOME/theos/sdks/
+      - name: Build Package
+        run: |
+          export THEOS=$HOME/theos
+          make package FINALPACKAGE=1
+      - name: Upload DEB
+        uses: actions/upload-artifact@v4
+        with:
+          name: MetalHudLoader-FPSOnly
+          path: packages/*.deb
