@@ -19,7 +19,7 @@ jobs:
 
       - name: Compile iOS Dylib (arm64)
         run: |
-          zig cc -x c -target aarch64-ios -dynamiclib -O2 -o MetalHudLoader.dylib init.m
+          zig cc -x c -target aarch64-ios -dynamiclib -Wl,-undefined,dynamic_lookup -O2 -o MetalHudLoader.dylib init.m
 
       - name: Upload Dylib Artifact
         uses: actions/upload-artifact@v4
