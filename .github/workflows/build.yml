@@ -1,22 +1,28 @@
-name: Build MetalHudLoader FPS Only
-on: [push, workflow_dispatch]
+name: Build MetalHud Instant
+
+on:
+  push:
+  workflow_dispatch:
+
 jobs:
   build:
-    runs-on: macos-latest
+    runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Install Theos & SDK
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Zig Compiler
+        uses: goto-bus-stop/setup-zig@v2
+        with:
+          version: 0.13.0
+
+      - name: Compile iOS Dylib (arm64)
         run: |
-          git clone --recursive https://github.com $HOME/theos
-          curl -LO https://github.com
-          unzip -q master.zip
-          mv sdks-master/*.sdk $HOME/theos/sdks/
-      - name: Build Package
-        run: |
-          export THEOS=$HOME/theos
-          make package FINALPACKAGE=1
-      - name: Upload DEB
+          zig cc -x c -target aarch64-ios -dynamiclib -O2 -o MetalHudLoader.dylib init.m
+
+      - name: Upload Dylib Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MetalHudLoader-FPSOnly
-          path: packages/*.deb
+          name: MetalHudLoader-Mini-FPS
+          path: MetalHudLoader.dylib
