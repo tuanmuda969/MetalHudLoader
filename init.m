@@ -1,4 +1,4 @@
-#include <stdlib.h>
+extern int setenv(const char *name, const char *value, int overwrite);
 
 __attribute__((constructor))
 static void init_hud(void) {
